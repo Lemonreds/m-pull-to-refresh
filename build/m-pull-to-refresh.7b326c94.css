@@ -6,15 +6,24 @@
   height: 100%;
 }
 
+.rfooter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 0;
+}
+
 .m-pull-to-refresh-container {
   user-select: none;
   overflow: auto;
   height: 100%;
+  touch-action: pan-y;
 }
 .m-pull-to-refresh-container .m-pull-to-refresh-body {
   position: relative;
   height: 100%;
   transition-property: transform;
+  touch-action: pan-y;
 }
 .m-pull-to-refresh-container .m-pull-to-refresh-body .m-pull-to-refresh-header {
   position: absolute;

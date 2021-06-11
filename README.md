@@ -2,6 +2,10 @@
 
 一个支持下拉刷新、上拉加载的 React 移动端组件。
 
+## 在线预览
+
+https://lemonreds.github.io/demo/m-pull-to-refresh/index.html
+
 ## 特点
 
 - 仅支持移动端。
@@ -12,8 +16,10 @@
 
 ## 预览
 
-![m-pull-to-refresh](https://cdn.jsdelivr.net/gh/Lemonreds/vue2-component@master/images/pull-to-refresh.5lq152czp200.gif)
-
+<img src="https://cdn.jsdelivr.net/gh/Lemonreds/vue2-component@master/images/pull-to-refresh.5lq152czp200.gif" 
+width="370"
+height="600"
+/>
 ## 使用
 
 ```javascript
@@ -55,4 +61,4 @@ const PullUpStatus = {
 
 2. npm run start
 
-3 localhost:3001/example1.html
+3. localhost:3001/example1.html

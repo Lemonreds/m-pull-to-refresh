@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { render } from 'react-dom';
 import MPullToRefresh from '../m-pull-to-refresh';
+import './app.less';
 
 const colors = ['#8868ff', '#24cdd0', '#ffc84e', '#fe657f', '#748cfd'];
 
@@ -58,18 +59,36 @@ const App = () => {
   };
 
   return (
-    <div
-      style={{
-        height: 600,
-        overflow: 'auto',
-        border: '1px solid #eee',
-      }}
-    >
-      <MPullToRefresh refresh={refresh} loadMore={loadMore} hasMore={hasMore}>
-        {list.map((index) => (
-          <RowRender index={index} key={index} />
-        ))}
-      </MPullToRefresh>
+    <div>
+      <h3 className="title">
+        m-pull-to-refresh{' '}
+        <a
+          href="https://github.com/Lemonreds/m-pull-to-refresh"
+          target="__blank"
+        >
+          @Github
+        </a>
+      </h3>
+      <p className="desc">一个支持下拉刷新、上拉加载的 React</p>
+
+      <p className="tips">
+        TIPS: 移动端组件，请将浏览器设置为移动设备调试模式，不支持PC端
+      </p>
+
+      <div className="line" />
+      <div
+        style={{
+          height: 600,
+          overflow: 'auto',
+          border: '1px solid #eee',
+        }}
+      >
+        <MPullToRefresh refresh={refresh} loadMore={loadMore} hasMore={hasMore}>
+          {list.map((index) => (
+            <RowRender index={index} key={index} />
+          ))}
+        </MPullToRefresh>
+      </div>
     </div>
   );
 };
