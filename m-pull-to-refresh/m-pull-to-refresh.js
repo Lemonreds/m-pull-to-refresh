@@ -149,7 +149,8 @@ class MPullToRefresh extends React.Component {
     // }
 
     if (isEdge && this.diffY) {
-      this.update(this.easing());
+      const dy = this.easing();
+      this.update(dy);
     }
   };
 
