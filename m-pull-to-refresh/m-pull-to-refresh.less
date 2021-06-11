@@ -1,0 +1,18 @@
+.m-pull-to-refresh-container {
+  user-select: none;
+  overflow: auto;
+  height: 100%;
+  touch-action: pan-y;
+  .m-pull-to-refresh-body {
+    position: relative;
+    height: 100%;
+    transition-property: transform;
+    touch-action: pan-y;
+    .m-pull-to-refresh-header {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      transform: translateY(-100%) translateZ(1px);
+    }
+  }
+}

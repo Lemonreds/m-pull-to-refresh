@@ -1,0 +1,77 @@
+import React, { useState, useEffect } from 'react';
+import { render } from 'react-dom';
+import MPullToRefresh from '../m-pull-to-refresh';
+
+const colors = ['#8868ff', '#24cdd0', '#ffc84e', '#fe657f', '#748cfd'];
+
+const RowRender = (props) => {
+  const { index } = props;
+  return (
+    <div
+      style={{
+        height: 80,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        background: colors[index % colors.length],
+        color: '#fff',
+      }}
+    >
+      {index}
+    </div>
+  );
+};
+
+const pageSize = 10;
+
+const App = () => {
+  const [list, setList] = useState([]);
+  const [hasMore, setHasMore] = useState(true);
+  const [pageNum, setPageNum] = useState(1);
+
+  useEffect(() => {
+    get(1);
+  }, []);
+
+  const get = (_pageNum) => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const newList = new Array(_pageNum === 4 ? 2 : 10)
+          .fill(true)
+          .map((_, index) => (_pageNum - 1) * pageSize + index);
+
+        setList(_pageNum === 1 ? newList : list.concat(newList));
+        setPageNum(_pageNum);
+        setHasMore(_pageNum < 4); // total'list is 32
+
+        resolve();
+      }, 800);
+    });
+  };
+
+  const refresh = () => {
+    return get(1);
+  };
+
+  const loadMore = () => {
+    return get(pageNum + 1);
+  };
+
+  return (
+    <div
+      style={{
+        height: 600,
+        overflow: 'auto',
+        border: '1px solid #eee',
+      }}
+    >
+      <MPullToRefresh refresh={refresh} loadMore={loadMore} hasMore={hasMore}>
+        {list.map((index) => (
+          <RowRender index={index} key={index} />
+        ))}
+      </MPullToRefresh>
+    </div>
+  );
+};
+
+render(<App />, document.getElementById('root'));

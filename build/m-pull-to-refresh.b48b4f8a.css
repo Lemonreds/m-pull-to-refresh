@@ -1,0 +1,25 @@
+.rheader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.m-pull-to-refresh-container {
+  user-select: none;
+  overflow: auto;
+  height: 100%;
+}
+.m-pull-to-refresh-container .m-pull-to-refresh-body {
+  position: relative;
+  height: 100%;
+  transition-property: transform;
+}
+.m-pull-to-refresh-container .m-pull-to-refresh-body .m-pull-to-refresh-header {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  transform: translateY(-100%) translateZ(1px);
+}
+
