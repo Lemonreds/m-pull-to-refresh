@@ -32,3 +32,22 @@
   transform: translateY(-100%) translateZ(1px);
 }
 
+.title {
+  color: #d23669;
+  font-size: 16px;
+}
+.desc {
+  color: rgba(0, 0, 0, 0.85);
+  font-size: 15px;
+}
+.tips {
+  font-size: 13px;
+  color: gray;
+}
+.line {
+  margin: 24px 0;
+  height: 2px;
+  width: 100%;
+  background: #e8e8e8;
+}
+
