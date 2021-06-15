@@ -12,4 +12,33 @@ const PullDownStatus = {
   finish: 'finish', // 完成刷新
 };
 
-export { PullUpStatus, PullDownStatus };
+// @see: https://developer.mozilla.org/zh-CN/docs/Web/API/EventTarget/addEventListene
+let passiveIfSupported = false;
+try {
+  const opts = Object.defineProperty({}, 'passive', {
+    // eslint-disable-next-line getter-return
+    get() {
+      passiveIfSupported = true;
+    },
+  });
+  window.addEventListener('test', null, opts);
+} catch (e) {
+  // empty
+}
+const willPreventDefault = passiveIfSupported ? { passive: false } : false;
+
+const bindEvents = (ele, events) => {
+  Object.keys(events).forEach((event) => {
+    const handle = events[event];
+    ele.addEventListener(event, handle, willPreventDefault);
+  });
+};
+
+const unbindEvents = (ele, events) => {
+  Object.keys(events).forEach((event) => {
+    const handle = events[event];
+    ele.removeEventListener(event, handle, willPreventDefault);
+  });
+};
+
+export { PullUpStatus, PullDownStatus, bindEvents, unbindEvents };

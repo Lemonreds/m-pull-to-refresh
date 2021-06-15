@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import RHeader from './components/RHeader';
 import RFooter from './components/RFooter';
 import StaticRenderer from './components/StaticRenderer';
-import { PullDownStatus, PullUpStatus } from './util';
+import { PullDownStatus, PullUpStatus, bindEvents, unbindEvents } from './util';
 import './m-pull-to-refresh.less';
 
 class MPullToRefresh extends React.Component {
@@ -21,6 +21,10 @@ class MPullToRefresh extends React.Component {
   diffY = 0;
 
   events;
+
+  wrapRefEvents;
+
+  bodyRefEvents;
 
   state = {
     ptRfresh: PullDownStatus.init,
@@ -46,25 +50,26 @@ class MPullToRefresh extends React.Component {
 
   init = () => {
     const { loadMore } = this.props;
-    const ele = this.wrapRef;
-    if (loadMore) {
-      this.events = {
-        scroll: this.onScroll,
-      };
 
-      Object.keys(this.events).forEach((key) => {
-        const handle = this.events[key];
-        ele.addEventListener(key, handle);
-      });
+    this.wrapRefEvents = {};
+    if (loadMore) {
+      this.wrapRefEvents.scroll = this.onScroll;
     }
+
+    this.bodyRefEvents = {
+      touchstart: this.onTouchStart,
+      touchmove: this.onTouchMove,
+      touchend: this.onTouchEnd,
+      touchcancel: this.onTouchEnd,
+    };
+
+    bindEvents(this.wrapRef, this.wrapRefEvents);
+    bindEvents(this.bodyRef, this.bodyRefEvents);
   };
 
   destroy = () => {
-    const ele = this.wrapRef;
-    Object.keys(this.events).forEach((key) => {
-      const handle = this.events[key];
-      ele.removeEventListener(key, handle);
-    });
+    unbindEvents(this.wrapRef, this.wrapRefEvents);
+    unbindEvents(this.bodyRef, this.bodyRefEvents);
   };
 
   onScroll = (e) => {
@@ -136,19 +141,19 @@ class MPullToRefresh extends React.Component {
 
     const isEdge = this.isEdge();
     const { clientX, clientY } = e.touches[0];
-    if (!isEdge) {
-      this.startX = clientX;
-      this.startY = clientY;
-    }
+
     this.diffX = clientX - this.startX;
     this.diffY = clientY - this.startY;
 
-    //  TODO:
-    // if (Math.abs(this.diffX) > 20 * window.devicePixelRatio) {
-    //   return;
-    // }
+    if (Math.abs(this.diffX) > 20 * window.devicePixelRatio) {
+      return;
+    }
 
-    if (isEdge && this.diffY) {
+    if (isEdge && this.diffY > 0) {
+      if (e.cancelable) {
+        e.preventDefault();
+      }
+
       const dy = this.easing();
       this.update(dy);
     }
@@ -239,10 +244,6 @@ class MPullToRefresh extends React.Component {
           ref={(_ref) => {
             this.bodyRef = _ref;
           }}
-          onTouchStart={this.onTouchStart}
-          onTouchMove={this.onTouchMove}
-          onTouchEnd={this.onTouchEnd}
-          onTouchCancel={this.onTouchEnd}
         >
           <div
             className="m-pull-to-refresh-header"

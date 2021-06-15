@@ -69,7 +69,7 @@ const App = () => {
           @Github
         </a>
       </h3>
-      <p className="desc">一个支持下拉刷新、上拉加载的 React</p>
+      <p className="desc">一个支持下拉刷新、上拉加载的 React 组件</p>
 
       <p className="tips">
         TIPS: 移动端组件，请将浏览器设置为移动设备调试模式，不支持PC端
