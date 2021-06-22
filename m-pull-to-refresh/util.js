@@ -51,4 +51,20 @@ const setAimation = (style, { transform, transitionDuration }) => {
   style.MozTransform = transform;
 };
 
-export { PullUpStatus, PullDownStatus, bindEvents, unbindEvents, setAimation };
+const isEqual = (a, b) => {
+  const eq = Object.keys(a).every((key) => {
+    if (a[key] instanceof Function && b[key] instanceof Function) return true;
+    if (a[key] !== b[key]) return false;
+    return true;
+  });
+  return eq;
+};
+
+export {
+  PullUpStatus,
+  PullDownStatus,
+  bindEvents,
+  unbindEvents,
+  setAimation,
+  isEqual,
+};

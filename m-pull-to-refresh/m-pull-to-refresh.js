@@ -1,7 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
-import isEqual from 'fast-deep-equal';
 import RHeader from './components/RHeader';
 import RFooter from './components/RFooter';
 import StaticRenderer from './components/StaticRenderer';
@@ -11,6 +10,7 @@ import {
   bindEvents,
   unbindEvents,
   setAimation,
+  isEqual,
 } from './util';
 import './m-pull-to-refresh.less';
 
