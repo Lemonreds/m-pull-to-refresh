@@ -1,10 +1,17 @@
 import React from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
+import isEqual from 'fast-deep-equal';
 import RHeader from './components/RHeader';
 import RFooter from './components/RFooter';
 import StaticRenderer from './components/StaticRenderer';
-import { PullDownStatus, PullUpStatus, bindEvents, unbindEvents } from './util';
+import {
+  PullDownStatus,
+  PullUpStatus,
+  bindEvents,
+  unbindEvents,
+  setAimation,
+} from './util';
 import './m-pull-to-refresh.less';
 
 class MPullToRefresh extends React.Component {
@@ -26,11 +33,12 @@ class MPullToRefresh extends React.Component {
 
   bodyRefEvents;
 
+  dy = 0;
+
+  duration = 0;
+
   state = {
     ptRfresh: PullDownStatus.init,
-    duration: 0,
-    dy: 0,
-
     ptMore: PullUpStatus.init,
   };
 
@@ -38,10 +46,10 @@ class MPullToRefresh extends React.Component {
     this.init();
   }
 
-  shouldComponentUpdate(nextProps) {
+  shouldComponentUpdate(nextProps, nextState) {
     const { children } = this.props;
     this.shouldUpdateChildren = children !== nextProps.children;
-    return true;
+    return !isEqual(nextState, this.state) || !isEqual(nextProps, this.props);
   }
 
   componentWillUnmount() {
@@ -126,7 +134,8 @@ class MPullToRefresh extends React.Component {
 
     if (this.isEdge()) {
       const { clientX, clientY } = e.touches[0];
-      this.setState({ duration: 0 });
+      this.duration = 0;
+      this.dy = 0;
       this.startX = clientX;
       this.startY = clientY;
       this.diffX = 0;
@@ -168,14 +177,13 @@ class MPullToRefresh extends React.Component {
       const { duration, headerHeight } = this.props;
       const { ptRfresh } = this.state;
 
+      this.duration = duration;
       if (ptRfresh === PullDownStatus.loosing) {
         this.update(headerHeight, PullDownStatus.loading);
         this.invokeRefresh();
       } else {
         this.update(0);
       }
-
-      this.setState({ duration });
     }
   };
 
@@ -193,11 +201,17 @@ class MPullToRefresh extends React.Component {
         t = PullDownStatus.loosing;
       }
     }
-    this.setState({ ptRfresh: t, dy });
+
+    this.setState({ ptRfresh: t }, () => {
+      setAimation(this.bodyRef.style, {
+        transitionDuration: `${this.duration}ms`,
+        transform: `translate3d(0px,${dy}px,1px)`,
+      });
+    });
   };
 
   easing = () => {
-    const { distanceToRefresh } = this.props;
+    const { distanceToRefresh, maxDistance } = this.props;
     let _dy = this.diffY;
 
     if (_dy > distanceToRefresh) {
@@ -208,12 +222,12 @@ class MPullToRefresh extends React.Component {
       }
     }
 
-    return Math.round(_dy);
+    return Math.min(maxDistance, Math.round(_dy));
   };
 
   render() {
     const { className, children, style, headerHeight, hasMore } = this.props;
-    const { ptRfresh, ptMore, duration, dy } = this.state;
+    const { ptRfresh, ptMore } = this.state;
 
     const renderChildren = (
       <StaticRenderer
@@ -221,11 +235,6 @@ class MPullToRefresh extends React.Component {
         render={() => children}
       />
     );
-
-    const bodyStyle = {
-      transitionDuration: `${duration}ms`,
-      transform: dy ? `translate3d(0,${dy}px, 0)` : '',
-    };
 
     return (
       <div
@@ -240,7 +249,6 @@ class MPullToRefresh extends React.Component {
             'm-pull-to-refresh-body',
             `m-pull-to-refresh-${ptRfresh}`
           )}
-          style={bodyStyle}
           ref={(_ref) => {
             this.bodyRef = _ref;
           }}
@@ -274,6 +282,7 @@ MPullToRefresh.propTypes = {
   hasMore: PropTypes.bool,
   distanceToLoadMore: PropTypes.number,
   loadMore: PropTypes.func, // ()=> Promise<any>
+  maxDistance: PropTypes.number,
 };
 
 MPullToRefresh.defaultProps = {
@@ -287,6 +296,7 @@ MPullToRefresh.defaultProps = {
   hasMore: true,
   distanceToLoadMore: 50,
   loadMore: null,
+  maxDistance: Infinity,
 };
 
 export default MPullToRefresh;

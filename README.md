@@ -38,13 +38,14 @@ import MPullToRefresh from '../m-pull-to-refresh';
 | 属性             | 描述                 | 类型             | 默认 |
 | ------------------ | ---------------------- | ------------------ | ---- |
 | distanceToRefresh  | 触发下拉刷新的距离 | number             | 56   |
-| refresh            | 下拉刷新触发的事件回调 | ()=> Promise<void> | -    |
+| refresh            | 下拉刷新触发的事件回调 | ()=> Promise | -    |
 | stayTime           | 刷新成功状态的停留时间 | number(ms)         | 600  |
 | duration           | 动画的duration      | number(ms)         | 300  |
 | headerHeight       | 刷新Header的高度  | number             | 56   |
 | hasMore            | 上拉加载是否有更多数据 | boolean            | true |
 | distanceToLoadMore | 触发上拉加载的距离 | number             | 50   |
-| loadMore           | 上拉加载触发的事件回调 | ()=> Promise<void> | -    |
+| loadMore           | 上拉加载触发的事件回调 | ()=> Promise | -    |
+| maxDistance        | 限制拖动的最大距离    | number | Infinity    |
 
 ## 下拉刷新的状态
 

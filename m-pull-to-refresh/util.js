@@ -41,4 +41,14 @@ const unbindEvents = (ele, events) => {
   });
 };
 
-export { PullUpStatus, PullDownStatus, bindEvents, unbindEvents };
+const setAimation = (style, { transform, transitionDuration }) => {
+  style.transitionDuration = transitionDuration;
+  style.webkitTransitionDuration = transitionDuration;
+  style.MozTransitionDuration = transitionDuration;
+
+  style.transform = transform;
+  style.webkitTransform = transform;
+  style.MozTransform = transform;
+};
+
+export { PullUpStatus, PullDownStatus, bindEvents, unbindEvents, setAimation };
