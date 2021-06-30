@@ -25,19 +25,22 @@ try {
 } catch (e) {
   // empty
 }
-const willPreventDefault = passiveIfSupported ? { passive: false } : false;
 
 const bindEvents = (ele, events) => {
   Object.keys(events).forEach((event) => {
     const handle = events[event];
-    ele.addEventListener(event, handle, willPreventDefault);
+    ele.addEventListener(
+      event,
+      handle,
+      passiveIfSupported ? { passive: false } : false
+    );
   });
 };
 
 const unbindEvents = (ele, events) => {
   Object.keys(events).forEach((event) => {
     const handle = events[event];
-    ele.removeEventListener(event, handle, willPreventDefault);
+    ele.removeEventListener(event, handle);
   });
 };
 
@@ -51,7 +54,7 @@ const setAimation = (style, { transform, transitionDuration }) => {
   style.MozTransform = transform;
 };
 
-const isEqual = (a, b) => {
+const isShallowEqual = (a, b) => {
   const eq = Object.keys(a).every((key) => {
     if (a[key] instanceof Function && b[key] instanceof Function) return true;
     if (a[key] !== b[key]) return false;
@@ -66,5 +69,5 @@ export {
   bindEvents,
   unbindEvents,
   setAimation,
-  isEqual,
+  isShallowEqual,
 };

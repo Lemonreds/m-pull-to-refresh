@@ -10,7 +10,7 @@ import {
   bindEvents,
   unbindEvents,
   setAimation,
-  isEqual,
+  isShallowEqual,
 } from './util';
 import './m-pull-to-refresh.less';
 
@@ -37,6 +37,8 @@ class MPullToRefresh extends React.Component {
 
   duration = 0;
 
+  isEdge = false;
+
   state = {
     ptRfresh: PullDownStatus.init,
     ptMore: PullUpStatus.init,
@@ -49,7 +51,10 @@ class MPullToRefresh extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     const { children } = this.props;
     this.shouldUpdateChildren = children !== nextProps.children;
-    return !isEqual(nextState, this.state) || !isEqual(nextProps, this.props);
+    return (
+      !isShallowEqual(nextState, this.state) ||
+      !isShallowEqual(nextProps, this.props)
+    );
   }
 
   componentWillUnmount() {
@@ -125,21 +130,37 @@ class MPullToRefresh extends React.Component {
     );
   };
 
-  isEdge = () => this.wrapRef.scrollTop === 0;
+  checkIsEdge = () => {
+    // iOS下 scrollTop 会出现bounce，导致出现负值
+    this.isEdge = Math.max(this.wrapRef.scrollTop, 0) === 0;
+
+    return this.isEdge;
+  };
+
+  startAt = (e) => {
+    const { clientX, clientY } = e.touches[0];
+    this.duration = 0;
+    this.dy = 0;
+    this.diffX = 0;
+    this.diffY = 0;
+    this.startX = clientX;
+    this.startY = clientY;
+  };
+
+  moveTo = (e) => {
+    const { clientX, clientY } = e.touches[0];
+
+    this.diffX = clientX - this.startX;
+    this.diffY = clientY - this.startY;
+  };
 
   onTouchStart = (e) => {
     if (!this.canRefresh()) {
       return;
     }
 
-    if (this.isEdge()) {
-      const { clientX, clientY } = e.touches[0];
-      this.duration = 0;
-      this.dy = 0;
-      this.startX = clientX;
-      this.startY = clientY;
-      this.diffX = 0;
-      this.diffY = 0;
+    if (this.checkIsEdge()) {
+      this.startAt(e);
     }
   };
 
@@ -148,22 +169,23 @@ class MPullToRefresh extends React.Component {
       return;
     }
 
-    const isEdge = this.isEdge();
-    const { clientX, clientY } = e.touches[0];
+    if (!this.isEdge) {
+      if (this.checkIsEdge()) {
+        this.startAt(e);
+      }
+    }
 
-    this.diffX = clientX - this.startX;
-    this.diffY = clientY - this.startY;
 
+    this.moveTo(e);
     if (Math.abs(this.diffX) > 20 * window.devicePixelRatio) {
       return;
     }
 
-    if (isEdge && this.diffY > 0) {
+    if (this.isEdge && this.diffY >= 0) {
       if (e.cancelable) {
         e.preventDefault();
       }
-
-      const dy = this.easing();
+      const dy = this.easing(this.diffY);
       this.update(dy);
     }
   };
@@ -173,7 +195,11 @@ class MPullToRefresh extends React.Component {
       return;
     }
 
-    if (this.isEdge() && this.diffY) {
+    if (!this.isEdge) {
+      return;
+    }
+
+    if (this.diffY) {
       const { duration, headerHeight } = this.props;
       const { ptRfresh } = this.state;
 
@@ -210,9 +236,9 @@ class MPullToRefresh extends React.Component {
     });
   };
 
-  easing = () => {
+  easing = (dy) => {
     const { distanceToRefresh, maxDistance } = this.props;
-    let _dy = this.diffY;
+    let _dy = dy;
 
     if (_dy > distanceToRefresh) {
       if (_dy < distanceToRefresh * 2) {
