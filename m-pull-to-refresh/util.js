@@ -63,6 +63,10 @@ const isShallowEqual = (a, b) => {
   return eq;
 };
 
+const u = window.navigator.userAgent;
+const isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1;
+const isIOS = /(iPhone|iPad|iPod|iOS|Mac)/i.test(u);
+
 export {
   PullUpStatus,
   PullDownStatus,
@@ -70,4 +74,6 @@ export {
   unbindEvents,
   setAimation,
   isShallowEqual,
+  isAndroid,
+  isIOS,
 };

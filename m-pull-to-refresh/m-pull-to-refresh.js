@@ -11,6 +11,7 @@ import {
   unbindEvents,
   setAimation,
   isShallowEqual,
+  isIOS,
 } from './util';
 import './m-pull-to-refresh.less';
 
@@ -175,7 +176,6 @@ class MPullToRefresh extends React.Component {
       }
     }
 
-
     this.moveTo(e);
     if (Math.abs(this.diffX) > 20 * window.devicePixelRatio) {
       return;
@@ -254,6 +254,12 @@ class MPullToRefresh extends React.Component {
   render() {
     const { className, children, style, headerHeight, hasMore } = this.props;
     const { ptRfresh, ptMore } = this.state;
+    const isPulling = ptRfresh === PullDownStatus.pulling;
+    /**
+     * iOS的滚动容器会有橡皮筋效果，有时下拉刷新（与容器滚动冲突时）会变得很灵敏，
+     * 所以禁止容器滚动，来处理这个问题
+     */
+    const iOSDebouneDisabled = isIOS && isPulling ? { overflow: 'hidden' } : {};
 
     const renderChildren = (
       <StaticRenderer
@@ -268,7 +274,7 @@ class MPullToRefresh extends React.Component {
         ref={(_ref) => {
           this.wrapRef = _ref;
         }}
-        style={style}
+        style={{ ...style, ...iOSDebouneDisabled }}
       >
         <div
           className={classnames(
