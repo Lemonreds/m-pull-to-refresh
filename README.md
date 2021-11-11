@@ -8,11 +8,12 @@ https://lemonreds.github.io/demo/m-pull-to-refresh/index.html
 
 ## 特点
 
-- 仅支持移动端。
-- 不限制最大下拉距离，释放后可以回弹。
-- 刷新完成后，可以配置延迟关闭滑动动画。
-- 同时支持下拉刷新以及上拉加载。
+- 由于使用了Touch Events，故仅支持移动端。
+- 支持下拉刷新、上拉加载。
 - 支持自定义 Header、Footer 组件。
+- 支持设置触发下拉刷新操作的距离。
+- 刷新成功后，可以设置延迟关闭动画。
+- 可以设置最大拉动距离。
 
 ## 预览
 
@@ -69,10 +70,16 @@ const PullUpStatus = {
 };
 ```
 
+## 更新日志
+
+
+1. 2021-11-05
+- 解决了safari下，因滚动容器橡皮筋效果导致的下拉过于灵敏问题。
+
 ## 本地运行示例
 
-1. npm run install
+1. yarn install
 
-2. npm run start
+2. yarn start
 
 3. localhost:3001/example1.html
