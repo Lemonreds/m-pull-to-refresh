@@ -256,13 +256,6 @@ class MPullToRefresh extends React.Component {
      */
     const iOSDebouneDisabled = isIOS && isPulling ? { overflow: 'hidden' } : {};
 
-    const renderChildren = (
-      <StaticRenderer
-        shouldUpdate={this.shouldUpdateChildren}
-        render={() => children}
-      />
-    );
-
     return (
       <div
         className={classnames(className, 'm-pull-to-refresh-container')}
@@ -287,7 +280,12 @@ class MPullToRefresh extends React.Component {
             <RHeader status={ptRfresh} />
           </div>
 
-          <div className="m-pull-to-refresh-children">{renderChildren}</div>
+          <div className="m-pull-to-refresh-children">
+            <StaticRenderer
+              shouldUpdate={this.shouldUpdateChildren}
+              render={() => children}
+            />
+          </div>
 
           <div className="m-pull-to-refresh-footer">
             <RFooter status={ptMore} hasMore={hasMore} />
