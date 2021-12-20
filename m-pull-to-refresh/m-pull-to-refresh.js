@@ -28,13 +28,9 @@ class MPullToRefresh extends React.Component {
 
   diffY = 0;
 
-  events;
-
   wrapRefEvents;
 
   bodyRefEvents;
-
-  dy = 0;
 
   duration = 0;
 
@@ -141,7 +137,6 @@ class MPullToRefresh extends React.Component {
   startAt = (e) => {
     const { clientX, clientY } = e.touches[0];
     this.duration = 0;
-    this.dy = 0;
     this.diffX = 0;
     this.diffY = 0;
     this.startX = clientX;

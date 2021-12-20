@@ -43,7 +43,7 @@ const App = () => {
 
         setList(_pageNum === 1 ? newList : list.concat(newList));
         setPageNum(_pageNum);
-        setHasMore(_pageNum < 4); // total'list is 32
+        setHasMore(_pageNum < 4); // list's total is 32
 
         resolve();
       }, 800);
