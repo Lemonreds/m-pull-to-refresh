@@ -50,4 +50,17 @@
   width: 100%;
   background: #e8e8e8;
 }
+.button {
+  padding: 14px 16px;
+  font-size: 15px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  cursor: pointer;
+  background-color: #f3faf8;
+  color: #237a65;
+  border: none;
+  outline: none;
+  border-radius: 244px;
+}
 

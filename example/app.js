@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { render } from 'react-dom';
 import MPullToRefresh from '../m-pull-to-refresh';
 import './app.less';
@@ -29,6 +29,7 @@ const App = () => {
   const [list, setList] = useState([]);
   const [hasMore, setHasMore] = useState(true);
   const [pageNum, setPageNum] = useState(1);
+  const ref = useRef();
 
   useEffect(() => {
     get(1);
@@ -50,6 +51,10 @@ const App = () => {
     });
   };
 
+  const callRefresh = () => {
+    ref.current?.callRefresh();
+  };
+
   const refresh = () => {
     return get(1);
   };
@@ -61,20 +66,18 @@ const App = () => {
   return (
     <div>
       <h3 className="title">
-        m-pull-to-refresh{' '}
-        <a
-          href="https://github.com/Lemonreds/m-pull-to-refresh"
-          target="__blank"
-        >
+        m-pull-to-refresh
+        <a href="https://github.com/Lemonreds/m-pull-to-refresh" target="__blank">
           @Github
         </a>
       </h3>
       <p className="desc">一个支持下拉刷新、上拉加载的 React 组件</p>
 
-      <p className="tips">
-        TIPS: 移动端组件，请将浏览器设置为移动设备调试模式，不支持PC端
-      </p>
+      <p className="tips">TIPS: 移动端组件，请将浏览器设置为移动设备调试模式，不支持PC端</p>
 
+      <button type="button" onClick={callRefresh} className="button">
+        手动触发下拉刷新
+      </button>
       <div className="line" />
       <div
         style={{
@@ -83,7 +86,7 @@ const App = () => {
           border: '1px solid #eee',
         }}
       >
-        <MPullToRefresh refresh={refresh} loadMore={loadMore} hasMore={hasMore}>
+        <MPullToRefresh refresh={refresh} loadMore={loadMore} hasMore={hasMore} ref={ref}>
           {list.map((index) => (
             <RowRender index={index} key={index} />
           ))}

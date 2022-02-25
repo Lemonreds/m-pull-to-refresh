@@ -48,10 +48,7 @@ class MPullToRefresh extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     const { children } = this.props;
     this.shouldUpdateChildren = children !== nextProps.children;
-    return (
-      !isShallowEqual(nextState, this.state) ||
-      !isShallowEqual(nextProps, this.props)
-    );
+    return !isShallowEqual(nextState, this.state) || !isShallowEqual(nextProps, this.props);
   }
 
   componentWillUnmount() {
@@ -91,8 +88,7 @@ class MPullToRefresh extends React.Component {
 
     const { distanceToLoadMore } = this.props;
     const { scrollTop, scrollHeight, clientHeight } = e.target;
-    const isReachBottom =
-      scrollTop + clientHeight >= scrollHeight - distanceToLoadMore;
+    const isReachBottom = scrollTop + clientHeight >= scrollHeight - distanceToLoadMore;
     if (isReachBottom) {
       this.invokeLoadMore();
     }
@@ -122,9 +118,7 @@ class MPullToRefresh extends React.Component {
 
   canRefresh = () => {
     const { ptRfresh } = this.state;
-    return (
-      ptRfresh !== PullDownStatus.loading && ptRfresh !== PullDownStatus.finish
-    );
+    return ptRfresh !== PullDownStatus.loading && ptRfresh !== PullDownStatus.finish;
   };
 
   checkIsEdge = () => {
@@ -208,6 +202,15 @@ class MPullToRefresh extends React.Component {
     }
   };
 
+  callRefresh = () => {
+    if (this.canRefresh()) {
+      const { duration, headerHeight } = this.props;
+      this.duration = duration;
+      this.update(headerHeight, PullDownStatus.loading);
+      this.invokeRefresh();
+    }
+  };
+
   update = (dy, status) => {
     const { distanceToRefresh } = this.props;
 
@@ -265,26 +268,17 @@ class MPullToRefresh extends React.Component {
         style={{ ...style, ...iOSDebouneDisabled }}
       >
         <div
-          className={classnames(
-            'm-pull-to-refresh-body',
-            `m-pull-to-refresh-${ptRfresh}`
-          )}
+          className={classnames('m-pull-to-refresh-body', `m-pull-to-refresh-${ptRfresh}`)}
           ref={(_ref) => {
             this.bodyRef = _ref;
           }}
         >
-          <div
-            className="m-pull-to-refresh-header"
-            style={{ height: headerHeight }}
-          >
+          <div className="m-pull-to-refresh-header" style={{ height: headerHeight }}>
             <RHeader status={ptRfresh} />
           </div>
 
           <div className="m-pull-to-refresh-children">
-            <StaticRenderer
-              shouldUpdate={this.shouldUpdateChildren}
-              render={() => children}
-            />
+            <StaticRenderer shouldUpdate={this.shouldUpdateChildren} render={() => children} />
           </div>
 
           <div className="m-pull-to-refresh-footer">
